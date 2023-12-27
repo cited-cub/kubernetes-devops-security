@@ -3,12 +3,12 @@ pipeline {
 
   stages {
     stage('Build Artifact') {
-      container('labcontainertemplate') {
+//      container('labcontainertemplate') {
         steps {
           sh "mvn clean package -DskipTests=true"
           archive 'target/*.jar' //so that they can be downloaded later
         }
-      }   
+//      }   
     }
   }
 }
