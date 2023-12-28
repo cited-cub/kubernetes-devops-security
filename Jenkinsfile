@@ -15,14 +15,17 @@
 
 podTemplate(containers: [
   containerTemplate(
-    name: 'jnlp',
-    image: 'jenkins/inbound-agent:4.13.3-1'
+    name: 'maven',
+    image: 'maven:3.6.3-jdk-8'
     )
   ]) {
     node(POD_LABEL) {
-      container('jnlp') {
-        stage('Run shell') {
-            sh 'echo hello world'
+      stage('Get a Maven project') {
+        git 'https://github.com/cited-cub/kubernetes-devops-security.git'
+        container('maven') {
+          stage('Run shell') {
+              sh 'echo hello world'
+          }
         }
       }
     }
