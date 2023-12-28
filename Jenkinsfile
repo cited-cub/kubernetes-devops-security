@@ -16,12 +16,14 @@
 podTemplate(containers: [
   containerTemplate(
     name: 'jnlp',
-    image: 'jenkins/inbound-agent:latest'
+    image: 'jenkins/inbound-agent:4.13.3-1'
     )
   ]) {
     node(POD_LABEL) {
+      container('jnlp') {
         stage('Run shell') {
             sh 'echo hello world'
         }
+      }
     }
 }
