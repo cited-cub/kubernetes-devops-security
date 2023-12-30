@@ -80,7 +80,7 @@ pipeline {
       steps {
         container('kaniko') {
           sh '''
-            /kaniko/executor --context `pwd` --destination 013972460831.dkr.ecr.eu-central-1.amazonaws.com/numeric-app:""$GIT_COMMIT""
+            /kaniko/executor --context `pwd` --destination 039723078141.dkr.ecr.eu-central-1.amazonaws.com/numeric-app:""$GIT_COMMIT""
           '''
         }
       }
