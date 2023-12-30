@@ -17,7 +17,7 @@ podTemplate(containers: [
                     echo "maven build"
                     '''
                     sh "mvn clean package -DskipTests=true"
-                    archive 'target/*.jar'
+                    archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
                 }
             }
         }
