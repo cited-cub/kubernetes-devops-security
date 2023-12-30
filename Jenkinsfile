@@ -76,5 +76,14 @@ pipeline {
         }
       }
     }
+    stage('Build Java Image') {
+      steps {
+        container('kaniko') {
+          sh '''
+            /kaniko/executor --context `pwd` --destination 013972460831.dkr.ecr.eu-central-1.amazonaws.com/numeric-app:""$GIT_COMMIT""
+          '''
+        }
+      }
+    }
   }
 }
