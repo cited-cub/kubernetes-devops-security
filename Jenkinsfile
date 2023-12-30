@@ -20,7 +20,7 @@ podTemplate(containers: [
           archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
         }
         stage('Unit Tests - JUnit and Jacoco') {
-          sh "maven test"
+          sh "mvn test"
         }
         // post {
         //   always {
