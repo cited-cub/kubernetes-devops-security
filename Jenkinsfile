@@ -17,7 +17,7 @@ podTemplate(containers: [
                     echo "maven build"
                     '''
                     sh "mvn clean package -DskipTests=true"
-                    sh "ls -la"
+                    archive 'target/*.jar'
                 }
             }
         }
