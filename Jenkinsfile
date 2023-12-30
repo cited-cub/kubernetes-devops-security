@@ -30,7 +30,11 @@ pipeline {
       }
     }
     stage('Unit Tests - JUnit and Jacoco') {
-      sh "mvn test"
+      steps {
+        container('maven') {
+          sh "mvn test"
+        }
+      }
     }
   }
 }
