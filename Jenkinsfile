@@ -19,12 +19,14 @@ pipeline {
       }
     }
     stage('Build a Maven project') {
-      container('maven') {
-        sh '''
-          echo "maven build"
-        '''
-        sh "mvn clean package -DskipTests=true"
-        archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+      steps {
+        container('maven') {
+          sh '''
+            echo "maven build"
+          '''
+          sh "mvn clean package -DskipTests=true"
+          archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+        }
       }
     }
     stage('Unit Tests - JUnit and Jacoco') {
