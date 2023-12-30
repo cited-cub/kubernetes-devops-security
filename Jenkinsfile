@@ -37,7 +37,6 @@ pipeline {
       }
       post {
         always {
-          sh "ls target/"
           junit 'target/surefire-reports/*.xml'
           jacoco execPattern: 'target/jacoco.exec'
         }
