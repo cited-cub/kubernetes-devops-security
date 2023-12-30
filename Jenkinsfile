@@ -16,6 +16,7 @@ podTemplate(containers: [
                     sh '''
                     echo "maven build"
                     '''
+                    sh "mvn clean package -DskipTests=true"
                 }
             }
         }
