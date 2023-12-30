@@ -19,6 +19,17 @@ podTemplate(containers: [
                     sh "mvn clean package -DskipTests=true"
                     archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
                 }
+                stage('Unit Tests - JUnit and Jacoco') {
+                  steps {
+                    sh "maven test"
+                  }
+                  post {
+                    always {
+                      junit 'target/surefire-reports/*.xml'
+                      jacoco execPattern: 'target/jacoco.exec'
+                    }
+                  }
+                }
             }
         }
     }
