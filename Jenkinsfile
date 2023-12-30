@@ -13,18 +13,20 @@ pipeline {
   }
   stages {
     stage('Get a Maven project') {
-      git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
-      sh 'ls -la'
-      container('maven') {
-        stage('Build a Maven project') {
-          sh '''
-            echo "maven build"
-          '''
-          sh "mvn clean package -DskipTests=true"
-          archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
-        }
-        stage('Unit Tests - JUnit and Jacoco') {
-          sh "mvn test"
+      steps {
+        git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
+        sh 'ls -la'
+        container('maven') {
+          stage('Build a Maven project') {
+            sh '''
+              echo "maven build"
+            '''
+            sh "mvn clean package -DskipTests=true"
+            archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+          }
+          stage('Unit Tests - JUnit and Jacoco') {
+            sh "mvn test"
+          }
         }
       }
     }
