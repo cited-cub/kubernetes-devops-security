@@ -39,6 +39,12 @@ pipeline {
             volumeMounts:
             - name: kaniko-secret
               mountPath: /kaniko/.docker
+          - name: kubectl
+            image: bitnami/kubectl
+            command:
+            - sleep
+            args:
+            - 9999999
           restartPolicy: Never
           volumes:
           - name: kaniko-secret
@@ -93,14 +99,16 @@ pipeline {
     // }
     stage('Kubernetes deployment - DEV') {
       steps {
-        container('kaniko') {
-          // sh "echo ${REGISTRY_URI}"
-          sh "env"
-          sh "echo $GIT_COMMIT"
-          sh '''
-            sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
-          '''
-          sh "cat k8s_deployment_service.yaml"
+        container('kubectl') {
+          withKubeConfig([credentialsId: 'kubeconfig']) {
+            sh "env"
+            sh "echo $GIT_COMMIT"
+            sh '''
+              sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
+            '''
+            sh "kubectl version"
+            sh "kubectl apply -f k8s_deployment_service.yaml"
+          }
         }
       }
     }
