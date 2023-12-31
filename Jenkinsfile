@@ -52,45 +52,45 @@ pipeline {
   }
 
   stages {
-    stage('Get a Maven project') {
-      steps {
-        git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
-        sh 'ls -la'
-      }
-    }
-    stage('Build a Maven project') {
-      steps {
-        container('maven') {
-          sh '''
-            echo "maven build"
-          '''
-          sh "mvn clean package -DskipTests=true"
-          archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
-        }
-      }
-    }
-    stage('Unit Tests - JUnit and Jacoco') {
-      steps {
-        container('maven') {
-          sh "mvn test"
-        }
-      }
-      post {
-        always {
-          junit 'target/surefire-reports/*.xml'
-          jacoco execPattern: 'target/jacoco.exec'
-        }
-      }
-    }
-    stage('Build and push Java image') {
-      steps {
-        container('kaniko') {
-          sh '''
-            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
-          '''
-        }
-      }
-    }
+    // stage('Get a Maven project') {
+    //   steps {
+    //     git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
+    //     sh 'ls -la'
+    //   }
+    // }
+    // stage('Build a Maven project') {
+    //   steps {
+    //     container('maven') {
+    //       sh '''
+    //         echo "maven build"
+    //       '''
+    //       sh "mvn clean package -DskipTests=true"
+    //       archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+    //     }
+    //   }
+    // }
+    // stage('Unit Tests - JUnit and Jacoco') {
+    //   steps {
+    //     container('maven') {
+    //       sh "mvn test"
+    //     }
+    //   }
+    //   post {
+    //     always {
+    //       junit 'target/surefire-reports/*.xml'
+    //       jacoco execPattern: 'target/jacoco.exec'
+    //     }
+    //   }
+    // }
+    // stage('Build and push Java image') {
+    //   steps {
+    //     container('kaniko') {
+    //       sh '''
+    //         /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
+    //       '''
+    //     }
+    //   }
+    // }
     stage('Kubernetes deployment - DEV') {
       steps {
         container('kaniko') {
