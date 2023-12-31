@@ -26,6 +26,12 @@ pipeline {
             - 30d
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
+            env:
+            - name: REGISTRY_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: kaniko-config
+                  key: registryUri
             command:
             - sleep
             args:
@@ -43,8 +49,8 @@ pipeline {
                 path: config.json
       '''     
     }
-
   }
+
   stages {
     stage('Get a Maven project') {
       steps {
@@ -80,7 +86,7 @@ pipeline {
       steps {
         container('kaniko') {
           sh '''
-            /kaniko/executor --context `pwd` --destination 039723078141.dkr.ecr.eu-central-1.amazonaws.com/numeric-app:""$GIT_COMMIT""
+            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
           '''
         }
       }
