@@ -93,12 +93,14 @@ pipeline {
     }
     stage('Kubernetes deployment - DEV') {
       steps {
-        sh "echo ${REGISTRY_URI}"
-        sh "echo $GIT_COMMIT"
-        sh '''
-          sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
-        '''
-        sh "cat k8s_deployment_service.yaml"
+        container('kaniko') {
+          sh "echo ${REGISTRY_URI}"
+          sh "echo $GIT_COMMIT"
+          sh '''
+            sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
+          '''
+          sh "cat k8s_deployment_service.yaml"
+        }
       }
     }
   }
