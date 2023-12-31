@@ -97,7 +97,6 @@ pipeline {
           sed -i 's#replace#${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""' k8s_deployment_service.yml
         '''
         sh "cat k8s_deployment_service.yaml"
-        }
       }
     }
   }
