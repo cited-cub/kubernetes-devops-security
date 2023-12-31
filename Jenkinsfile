@@ -100,15 +100,13 @@ pipeline {
     stage('Kubernetes deployment - DEV') {
       steps {
         container('kubectl') {
-          withKubeConfig([credentialsId: 'kubeconfig']) {
-            sh "env"
-            sh "echo $GIT_COMMIT"
-            sh '''
-              sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
-            '''
-            sh "kubectl version"
-            sh "kubectl apply -f k8s_deployment_service.yaml"
-          }
+          sh "env"
+          sh "echo $GIT_COMMIT"
+          sh '''
+            sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
+          '''
+          sh "kubectl version"
+          sh "kubectl apply -f k8s_deployment_service.yaml"
         }
       }
     }
