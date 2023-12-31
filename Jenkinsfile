@@ -94,7 +94,7 @@ pipeline {
     stage('Kubernetes deployment - DEV') {
       steps {
         sh '''
-          sed -i 's#replace#${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""' k8s_deployment_service.yml
+          sed -i 's#replace#${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""#g' k8s_deployment_service.yml
         '''
         sh "cat k8s_deployment_service.yaml"
       }
