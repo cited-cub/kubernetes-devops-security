@@ -82,12 +82,21 @@ pipeline {
         }
       }
     }
-    stage('Build Java Image') {
+    stage('Build and push Java image') {
       steps {
         container('kaniko') {
           sh '''
             /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
           '''
+        }
+      }
+    }
+    stage('Kubernetes deployment - DEV') {
+      steps {
+        sh '''
+          sed -i 's#replace#${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""' k8s_deployment_service.yml
+        '''
+        sh "cat k8s_deployment_service.yaml"
         }
       }
     }
