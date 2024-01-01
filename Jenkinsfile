@@ -104,7 +104,7 @@ pipeline {
               sh "mvn dependency-check:check"
             }
           }
-        },
+        }
         stage('Trivy') {
           steps {
             container('trivy') {
