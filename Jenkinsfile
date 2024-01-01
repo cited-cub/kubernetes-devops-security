@@ -94,22 +94,11 @@ pipeline {
           sh "mvn test"
         }
       }
-      post {
-        always {
-          junit 'target/surefire-reports/*.xml'
-          jacoco execPattern: 'target/jacoco.exec'
-        }
-      }
     }
     stage('Vulnerability Scan - Docker - Dependency Check') {
       steps {
         container('maven') {
           sh "mvn dependency-check:check"
-        }
-      }
-      post {
-        always {
-          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
         }
       }
     }
@@ -139,6 +128,13 @@ pipeline {
           sh "kubectl apply -f k8s_deployment_service.yaml"
         }
       }
+    }
+  }
+  post {
+    always {
+      junit 'target/surefire-reports/*.xml'
+      jacoco execPattern: 'target/jacoco.exec'
+      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
   }
 }
