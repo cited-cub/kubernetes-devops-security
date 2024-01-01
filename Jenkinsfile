@@ -120,7 +120,7 @@ pipeline {
           //   echo "Exit Code: ${exit_code}";
           //   exit $exit_code
           // '''
-          sh "bash trivy-docker-image-scan.sh"
+          sh "sh trivy-docker-image-scan.sh"
         }
       }
     }
