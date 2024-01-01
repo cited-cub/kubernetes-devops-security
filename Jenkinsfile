@@ -9,6 +9,7 @@ pipeline {
           labels:
             jenkins/label: mypod
         spec:
+          serviceAccountName: jenkins-admin
           containers:
           - name: maven
             image: maven:3.8.1-jdk-8
@@ -33,10 +34,9 @@ pipeline {
               mountPath: /kaniko/.docker
           - name: kubectl
             image: bitnami/kubectl
-            // securityContext:
-            //   fsGroup: 1000
-            //   runAsUser: 1000
-            serviceAccountName: jenkins-admin
+            securityContext:
+              fsGroup: 1000
+              runAsUser: 1000
             command:
             - sleep
             args:
