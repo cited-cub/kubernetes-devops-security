@@ -33,9 +33,9 @@ pipeline {
               mountPath: /kaniko/.docker
           - name: kubectl
             image: bitnami/kubectl
-            securityContext:
-              fsGroup: 1000
-              runAsUser: 1000
+            // securityContext:
+            //   fsGroup: 1000
+            //   runAsUser: 1000
             serviceAccountName: jenkins-admin
             command:
             - sleep
