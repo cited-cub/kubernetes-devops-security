@@ -107,6 +107,8 @@ pipeline {
           '''
           sh "kubectl version"
           sh "kubectl apply -f k8s_deployment_service.yaml"
+          sh "kubectl create deploy node-app -n devops-tools --image siddharth67/node-service:v1"
+          sh "kubectl expose -n devops-tools deployment node-app --name node-service --port 5000"
         }
       }
     }
