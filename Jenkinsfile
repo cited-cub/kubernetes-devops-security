@@ -95,14 +95,14 @@ pipeline {
         }
       }
     }
-    stage('Vulnerability Scan - Docker - Dependency Check') {
-      steps {
-        parallel(
           // "Dependency Scan": {
           //   container('maven') {
           //     sh "mvn dependency-check:check"
           //   }
           // },
+    stage('Vulnerability Scan - Docker') {
+      steps {
+        parallel(
           "Trivy Scan" {
             container('trivy') {
               sh "sh trivy-docker-image-scan.sh"
