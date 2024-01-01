@@ -111,17 +111,21 @@ pipeline {
       steps {
         container('trivy') {
           echo "${dockerImageName}"
-          // sh "dockerImageName2=$(awk 'NR==1 \"{print $2}\" Dockerfile)"
-          // echo $dockerImageName2
           sh '''
             trivy image --exit-code 0 --severity HIGH ${dockerImageName}
           '''
           sh '''
             trivy image --exit-code 1 --severity CRITICAL ${dockerImageName}
           '''
-          // exit_code=$?
-          // echo 'Exit Code: \$exit_code'
-          // exit $exit_code
+          sh '''
+            exit_code=$?
+          '''
+          sh '''
+            echo 'Exit Code: ${exit_code}'
+          '''
+          sh '''
+            exit $exit_code
+          '''
         }
       }
     }
