@@ -116,14 +116,8 @@ pipeline {
           '''
           sh '''
             trivy image --exit-code 1 --severity CRITICAL ${dockerImageName}
-          '''
-          sh '''
             exit_code=$?
-          '''
-          sh '''
             echo "Exit Code: ${exit_code}"
-          '''
-          sh '''
             exit $exit_code
           '''
         }
