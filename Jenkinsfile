@@ -104,7 +104,7 @@ pipeline {
     stage('Vulnerability Scan - Docker') {
       environment {
         dockerImageName = """${sh(
-          returnStdOut: true,
+          returnStdout: true,
           script: 'awk \'NR==1 {print $2}\' Dockerfile'
         )}"""
       }
