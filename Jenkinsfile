@@ -105,7 +105,7 @@ pipeline {
       environment {
         dockerImageName = """${sh(
           returnStdOut: true,
-          script: "awk 'NR==1 \{print $2\}' Dockerfile"
+          script: "awk 'NR==1 \"{print $2}\"' Dockerfile"
         )}"""
       }
       steps {
