@@ -106,7 +106,7 @@ pipeline {
         dockerImageName = """${sh(
           returnStdOut: true,
           script: "awk 'NR==1 {print $2}' Dockerfile"
-        )}
+        )}"""
       }
       steps {
         container('trivy') {
