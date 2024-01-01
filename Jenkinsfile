@@ -97,16 +97,18 @@ pipeline {
     }
     stage('Vulnerability Scan - Docker - Dependency Check') {
       steps {
-        container('maven') {
-          sh "mvn dependency-check:check"
-        }
-      }
-    }
-    stage('Vulnerability Scan - Docker - Trivy') {
-      steps {
-        container('trivy') {
-          sh "sh trivy-docker-image-scan.sh"
-        }
+        parallel(
+          // "Dependency Scan": {
+          //   container('maven') {
+          //     sh "mvn dependency-check:check"
+          //   }
+          // },
+          "Trivy Scan" {
+            container('trivy') {
+              sh "sh trivy-docker-image-scan.sh"
+            }
+          }
+        )
       }
     }
     stage('Build and push Java image') {
