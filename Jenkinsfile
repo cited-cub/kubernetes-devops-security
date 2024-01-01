@@ -2,14 +2,6 @@ pipeline {
   agent {
     kubernetes {
       // cloud kubernetes
-      // label 'mypod'
-      // containerTemplate {
-      //   name 'maven'
-      //   image 'maven:3.8.1-jdk-8'
-      //   command 'sleep'
-      //   args '30d'
-      // }
-
       yaml '''
         apiVersion: v1
         kind: Pod
@@ -41,6 +33,10 @@ pipeline {
               mountPath: /kaniko/.docker
           - name: kubectl
             image: bitnami/kubectl
+            securityContext:
+              fsGroup: 1000
+              runAsUser: 1000
+            serviceAccountName: jenkins-admin
             command:
             - sleep
             args:
