@@ -97,6 +97,7 @@ pipeline {
       steps {
         container('kubectl') {
           sh "env"
+          sh "echo $REGISTRY_URI"
           sh "echo $GIT_COMMIT"
           sh '''
             sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
