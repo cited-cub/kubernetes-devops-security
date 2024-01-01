@@ -114,7 +114,7 @@ pipeline {
           // sh "dockerImageName2=$(awk 'NR==1 \"{print $2}\" Dockerfile)"
           // echo $dockerImageName2
           sh '''
-            trivy image --exit-code 0 --severity HIGH "${dockerImageName}"
+            trivy image --exit-code 0 --severity HIGH ${dockerImageName}
           '''
           // sh '''
           //   trivy image --exit-code 1 --severity CRITICAL python:3.4-alpine
