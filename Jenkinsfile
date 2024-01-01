@@ -104,12 +104,17 @@ pipeline {
     stage('Vulnerability Scan - Docker') {
       steps {
         container('trivy') {
+          sh "dockerImageName=$(awk 'NR==1 {print $2}' Dockerfile)"
+          echo $dockerImageName
           sh '''
             trivy image --exit-code 0 --severity HIGH python:3.4-alpine
           '''
           sh '''
             trivy image --exit-code 1 --severity CRITICAL python:3.4-alpine
           '''
+          exit_code=$?
+          echo "Exit Code: $exit_code"
+          exit $exit_code
         }
       }
     }
