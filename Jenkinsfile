@@ -120,7 +120,7 @@ pipeline {
             trivy image --exit-code 1 --severity CRITICAL python:3.4-alpine
           '''
           exit_code=$?
-          echo "Exit Code: $exit_code"
+          echo "Exit Code: \$exit_code"
           exit $exit_code
         }
       }
