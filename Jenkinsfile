@@ -101,14 +101,14 @@ pipeline {
           //   }
           // },
     stage('Vulnerability Scan - Docker') {
-      steps {
-        parallel(
-          "Trivy Scan" {
+      parallel {
+        stage('Trivy') {
+          steps {
             container('trivy') {
               sh "sh trivy-docker-image-scan.sh"
             }
           }
-        )
+        }
       }
     }
     stage('Build and push Java image') {
