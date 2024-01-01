@@ -121,7 +121,7 @@ pipeline {
             exit_code=$?
           '''
           sh '''
-            echo 'Exit Code: ${exit_code}'
+            echo "Exit Code: ${exit_code}"
           '''
           sh '''
             exit $exit_code
