@@ -116,9 +116,9 @@ pipeline {
           sh '''
             trivy image --exit-code 0 --severity HIGH ${dockerImageName}
           '''
-          // sh '''
-          //   trivy image --exit-code 1 --severity CRITICAL python:3.4-alpine
-          // '''
+          sh '''
+            trivy image --exit-code 1 --severity CRITICAL ${dockerImageName}
+          '''
           // exit_code=$?
           // echo 'Exit Code: \$exit_code'
           // exit $exit_code
