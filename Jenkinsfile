@@ -105,12 +105,12 @@ pipeline {
       environment {
         dockerImageName = """${sh(
           returnStdOut: true,
-          script: "awk 'NR==1 {print $2}' Dockerfile"
+          script: "awk 'NR==1 \{print $2\}' Dockerfile"
         )}"""
       }
       steps {
         container('trivy') {
-          sh "dockerImageName2=$(awk 'NR==1 {print $2}' Dockerfile)"
+          sh "dockerImageName2=$(awk 'NR==1 \{print $2\}' Dockerfile)"
           echo $dockerImageName
           echo $dockerImageName2
           sh '''
