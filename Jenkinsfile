@@ -102,24 +102,25 @@ pipeline {
     //   }
     // }
     stage('Vulnerability Scan - Docker') {
-      environment {
-        dockerImageName = """${sh(
-          returnStdout: true,
-          script: 'awk \'NR==1 {print $2}\' Dockerfile'
-        )}"""
-      }
+      // environment {
+      //   dockerImageName = """${sh(
+      //     returnStdout: true,
+      //     script: 'awk \'NR==1 {print $2}\' Dockerfile'
+      //   )}"""
+      // }
       steps {
         container('trivy') {
-          echo "${dockerImageName}"
-          sh '''
-            trivy image --exit-code 0 --severity HIGH ${dockerImageName}
-          '''
-          sh '''
-            trivy image --exit-code 1 --severity CRITICAL ${dockerImageName};
-            exit_code=$?;
-            echo "Exit Code: ${exit_code}";
-            exit $exit_code
-          '''
+          // echo "${dockerImageName}"
+          // sh '''
+          //   trivy image --exit-code 0 --severity HIGH ${dockerImageName}
+          // '''
+          // sh '''
+          //   trivy image --exit-code 1 --severity CRITICAL ${dockerImageName};
+          //   exit_code=$?;
+          //   echo "Exit Code: ${exit_code}";
+          //   exit $exit_code
+          // '''
+          sh "bash trivy-docker-image-scan.sh"
         }
       }
     }
