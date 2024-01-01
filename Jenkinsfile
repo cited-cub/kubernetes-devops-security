@@ -95,7 +95,6 @@ pipeline {
         }
       }
     }
-          },
     stage('Vulnerability Scan - Docker') {
       parallel {
         stage('Dependency Scan') {
