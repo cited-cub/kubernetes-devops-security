@@ -110,7 +110,7 @@ pipeline {
       }
       steps {
         container('trivy') {
-          sh "dockerImageName2=$(awk 'NR==1 \{print $2\}' Dockerfile)"
+          sh "dockerImageName2=$(awk 'NR==1 \"{print $2}\" Dockerfile)"
           echo $dockerImageName
           echo $dockerImageName2
           sh '''
