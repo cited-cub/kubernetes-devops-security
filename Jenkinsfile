@@ -37,6 +37,12 @@ pipeline {
             securityContext:
               fsGroup: 1000
               runAsUser: 1000
+            env:
+            - name: REGISTRY_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: kaniko-config
+                  key: registryUri
             command:
             - sleep
             args:
@@ -97,7 +103,7 @@ pipeline {
       steps {
         container('kubectl') {
           sh '''
-            sed -i "s#replace#926130990905.dkr.ecr.eu-central-1.amazonaws.com/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
+            sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
           '''
           sh "kubectl version"
           sh "kubectl apply -f k8s_deployment_service.yaml"
