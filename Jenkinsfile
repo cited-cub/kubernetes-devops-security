@@ -71,80 +71,64 @@ pipeline {
   }
 
   stages {
-    // stage('Get a Maven project') {
-    //   steps {
-    //     git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
-    //     sh 'ls -la'
-    //   }
-    // }
-    // stage('Build a Maven project') {
-    //   steps {
-    //     container('maven') {
-    //       sh '''
-    //         echo "maven build"
-    //       '''
-    //       sh "mvn clean package -DskipTests=true"
-    //       archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
-    //     }
-    //   }
-    // }
-    // stage('Unit Tests - JUnit and Jacoco') {
-    //   steps {
-    //     container('maven') {
-    //       sh "mvn test"
-    //     }
-    //   }
-    //   post {
-    //     always {
-    //       junit 'target/surefire-reports/*.xml'
-    //       jacoco execPattern: 'target/jacoco.exec'
-    //     }
-    //   }
-    // }
+    stage('Get a Maven project') {
+      steps {
+        git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
+        sh 'ls -la'
+      }
+    }
+    stage('Build a Maven project') {
+      steps {
+        container('maven') {
+          sh '''
+            echo "maven build"
+          '''
+          sh "mvn clean package -DskipTests=true"
+          archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+        }
+      }
+    }
+    stage('Unit Tests - JUnit and Jacoco') {
+      steps {
+        container('maven') {
+          sh "mvn test"
+        }
+      }
+      post {
+        always {
+          junit 'target/surefire-reports/*.xml'
+          jacoco execPattern: 'target/jacoco.exec'
+        }
+      }
+    }
     stage('Vulnerability Scan - Docker') {
-      // environment {
-      //   dockerImageName = """${sh(
-      //     returnStdout: true,
-      //     script: 'awk \'NR==1 {print $2}\' Dockerfile'
-      //   )}"""
-      // }
       steps {
         container('trivy') {
-          // echo "${dockerImageName}"
-          // sh '''
-          //   trivy image --exit-code 0 --severity HIGH ${dockerImageName}
-          // '''
-          // sh '''
-          //   trivy image --exit-code 1 --severity CRITICAL ${dockerImageName};
-          //   exit_code=$?;
-          //   echo "Exit Code: ${exit_code}";
-          //   exit $exit_code
-          // '''
           sh "sh trivy-docker-image-scan.sh"
         }
       }
     }
-    // stage('Build and push Java image') {
-    //   steps {
-    //     container('kaniko') {
-    //       sh '''
-    //         /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
-    //       '''
-    //     }
-    //   }
-    // }
-    // stage('Kubernetes deployment - DEV') {
-    //   steps {
-    //     container('kubectl') {
-    //       sh '''
-    //         sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
-    //       '''
-    //       sh "kubectl version"
-    //       sh "kubectl apply -f k8s_deployment_service.yaml"
-    //       sh "kubectl create deploy node-app -n devops-tools --image siddharth67/node-service:v1"
-    //       sh "kubectl expose -n devops-tools deployment node-app --name node-service --port 5000"
-    //     }
-    //   }
-    // }
+    stage('Build and push Java image') {
+      steps {
+        container('kaniko') {
+          sh '''
+            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
+          '''
+        }
+      }
+    }
+    stage('Kubernetes deployment - DEV') {
+      steps {
+        container('kubectl') {
+          sh '''
+            sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
+          '''
+          sh "kubectl version"
+          sh "kubectl apply -f k8s_deployment_service.yaml"
+          sh "kubectl create deploy node-app -n devops-tools --image siddharth67/node-service:v1"
+          sh "kubectl expose -n devops-tools deployment node-app --name node-service --port 5000"
+        }
+      }
+    }
   }
 }
