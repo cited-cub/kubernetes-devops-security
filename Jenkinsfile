@@ -48,7 +48,11 @@ pipeline {
             args:
             - 9999999
           - name: trivy
-            image: 
+            image: aquasec/trivy:0.17.2
+            command:
+            - sleep
+            args:
+            - 9999999
           restartPolicy: Never
           volumes:
           - name: kaniko-secret
