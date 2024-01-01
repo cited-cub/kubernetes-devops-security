@@ -53,6 +53,9 @@ pipeline {
             - sleep
             args:
             - 9999999
+            volumeMounts:
+            - name: cache
+              mountPath: /root/.cache
           restartPolicy: Never
           volumes:
           - name: kaniko-secret
@@ -61,6 +64,8 @@ pipeline {
               items:
               - key: .dockerconfigjson
                 path: config.json
+          - name: cache
+            emptyDir: {}
       '''     
     }
   }
@@ -100,7 +105,10 @@ pipeline {
       steps {
         container('trivy') {
           sh '''
-            trivy image python:3.4-alpine
+            trivy image --exit-code 0 --severity HIGH python:3.4-alpine
+          '''
+          sh '''
+            trivy image --exit-code 1 --severity CRITICAL python:3.4-alpine
           '''
         }
       }
