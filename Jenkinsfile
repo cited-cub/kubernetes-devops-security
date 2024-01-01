@@ -101,7 +101,19 @@ pipeline {
         }
       }
     }
-    stage('Vulnerability Scan - Docker') {
+    stage('Vulnerability Scan - Docker - Dependency Check') {
+      steps {
+        container('maven') {
+          sh "mvn dependency-check:check"
+        }
+      }
+      post {
+        always {
+          dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+        }
+      }
+    }
+    stage('Vulnerability Scan - Docker - Trivy') {
       steps {
         container('trivy') {
           sh "sh trivy-docker-image-scan.sh"
