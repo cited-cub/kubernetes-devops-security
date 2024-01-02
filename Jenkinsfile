@@ -17,6 +17,9 @@ pipeline {
             - sleep
             args:
             - 30d
+            volumeMounts:
+            - name: maven-data
+              mountPath: /root/.m2/repository
           - name: kaniko
             image: gcr.io/kaniko-project/executor:debug
             env:
@@ -54,7 +57,7 @@ pipeline {
             args:
             - 9999999
             volumeMounts:
-            - name: cache
+            - name: trivy-data
               mountPath: /root/.cache
           restartPolicy: Never
           volumes:
@@ -64,8 +67,12 @@ pipeline {
               items:
               - key: .dockerconfigjson
                 path: config.json
-          - name: cache
-            emptyDir: {}
+          - name: trivy-data
+            persistentVolumeClaim:
+              claimName: trivy-pv-claim
+          - name: maven-data
+            persistentVolumeClaim:
+              claimName: maven-pv-claim
       '''     
     }
   }
