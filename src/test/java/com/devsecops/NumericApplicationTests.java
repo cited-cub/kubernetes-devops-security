@@ -52,5 +52,10 @@ public class NumericApplicationTests {
             .andExpect(content().string("Kubernetes DevSecOps"));
     }
     
+    @Test
+    public void increment() throws Exception {
+        this.mockMvc.perform(get("/increment/665")).andExpect(status().isOk())
+            .andExpect(content().string("6"));
+    }
 
 }
