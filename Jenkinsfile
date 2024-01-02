@@ -103,6 +103,13 @@ pipeline {
         }
       }
     }
+    stage('SonarQube Analysis') {
+      steps {
+        container('maven') {
+          sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url=http://18.193.71.85:30302 -Dsonar.token=sqp_9dd9bf7d6c0f23590569c5ac974fcbf89d6423b4"
+        }
+      }
+    }
     stage('Vulnerability Scan - Docker') {
       parallel {
         stage('Dependency Scan') {
