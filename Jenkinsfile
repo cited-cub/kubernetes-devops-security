@@ -102,7 +102,7 @@ pipeline {
         }
       }
     }
-    state('Mutation Tests - PIT') {
+    stage('Mutation Tests - PIT') {
       steps {
         container('maven') {
           sh "mvn org.pitest:pitest-maven:mutationCoverage"
