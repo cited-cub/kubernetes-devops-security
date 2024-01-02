@@ -106,7 +106,7 @@ pipeline {
     stage('SonarQube Analysis') {
       steps {
         container('maven') {
-          sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url=http://18.193.71.85:30302 -Dsonar.token=sqp_9dd9bf7d6c0f23590569c5ac974fcbf89d6423b4"
+          sh "mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.projectName='numeric-application' -Dsonar.host.url=http://18.193.71.85:31186 -Dsonar.token=sqp_a71833ab691c25ba3d30fca29c31ca474f2849f3"
         }
       }
     }
