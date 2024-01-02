@@ -102,6 +102,13 @@ pipeline {
         }
       }
     }
+    state('Mutation Tests - PIT') {
+      steps {
+        container('maven') {
+          sh "mvn org.pitest:pitest-maven:mutationCoverage"
+        }
+      }
+    }
     stage('Vulnerability Scan - Docker') {
       parallel {
         stage('Dependency Scan') {
@@ -145,6 +152,7 @@ pipeline {
     always {
       junit 'target/surefire-reports/*.xml'
       jacoco execPattern: 'target/jacoco.exec'
+      pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
       dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
   }
