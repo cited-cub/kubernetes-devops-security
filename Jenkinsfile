@@ -78,12 +78,12 @@ pipeline {
   }
 
   stages {
-    stage('Get a Maven project') {
-      steps {
-        git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
-        sh 'ls -la'
-      }
-    }
+    // stage('Get a Maven project') {
+    //   steps {
+    //     git url: 'https://github.com/cited-cub/kubernetes-devops-security/', branch: 'main'
+    //     sh 'ls -la'
+    //   }
+    // }
     stage('Build a Maven project') {
       steps {
         container('maven') {
