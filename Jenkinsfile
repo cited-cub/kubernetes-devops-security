@@ -177,14 +177,14 @@ pipeline {
         stage('Kubesec Scan') {
           steps {
             container('curl-jq') {
-              sh "bash kubesec-scan.sh"
+              sh "sh kubesec-scan.sh"
             }
           }
         }
         stage('Trivy Scan') {
           steps {
             container('trivy') {
-              sh "bash trivy-k8s-scan.sh"
+              sh "sh trivy-k8s-scan.sh"
             }
           }
         }
