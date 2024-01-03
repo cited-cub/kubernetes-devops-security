@@ -1,4 +1,11 @@
 pipeline {
+  environment 
+    deploymentName = "devsecops"
+    containerName = "devsecops-container"
+    serviceName = "devsecops-svc"
+    imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
+    // applicationURL=""
+    applicationURI="/increment/99"
   agent {
     kubernetes {
       // cloud kubernetes
@@ -157,14 +164,32 @@ pipeline {
         }
       } 
     }
+    // stage('Kubernetes deployment - DEV') {
+    //   steps {
+    //     container('kubectl') {
+    //       sh '''
+    //         sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
+    //       '''
+    //       sh "kubectl version"
+    //       sh "kubectl apply -f k8s_deployment_service.yaml"
+    //     }
+    //   }
+    // }
     stage('Kubernetes deployment - DEV') {
-      steps {
-        container('kubectl') {
-          sh '''
-            sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
-          '''
-          sh "kubectl version"
-          sh "kubectl apply -f k8s_deployment_service.yaml"
+      parallel {
+        stage("Deployment") {
+          steps {
+            container('kubectl') {
+              sh "bash k8s-deployment.sh"
+            }
+          }
+        }
+        stage("Rollout Status") {
+          steps {
+            container('kubectl') {
+              sh "bash k8s-deployment-rollout-status.sh"
+            }
+          }
         }
       }
     }
