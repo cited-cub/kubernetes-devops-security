@@ -1,7 +1,8 @@
 #!/bin/bash
 
-#k8s-deployement.sh
+#k8s-deployment.sh
 
+imageName="${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
 sed -i "s#replace#${imageName}#g" k8s_deployment_service.yaml
 kubectl -n default get deployment ${deploymentName} > /dev/null
 
