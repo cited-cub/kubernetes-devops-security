@@ -30,9 +30,6 @@ spec:
           runAsNonRoot: true
           runAsUser: 100
           readOnlyRootFilesystem: true
-        resources:
-          limits:
-            memory: 20G
 ---
 apiVersion: v1
 kind: Service
