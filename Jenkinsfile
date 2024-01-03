@@ -60,7 +60,7 @@ pipeline {
             - name: trivy-data
               mountPath: /root/.cache
           - name: opa_conftest
-            image: openpolicyagent/conftest
+            image: openpolicyagent/conftest:latest
             command:
             - sleep
             args:
