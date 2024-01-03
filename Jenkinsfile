@@ -220,6 +220,20 @@ pipeline {
       }
     }
   }
+  stage('Integration Tests - DEV') {
+    steps {
+      container('kubectl') {
+        script {
+          try {
+            sh "sh integration-test.sh"
+          } catch (e) {
+            sh "kubectl -n default rollout undo deploy ${deploymentName}"
+          }
+          throw e
+        }
+      }
+    }
+  }
   post {
     always {
       junit 'target/surefire-reports/*.xml'
