@@ -224,7 +224,7 @@ pipeline {
         container('kubectl') {
           script {
             try {
-              sh "sh integration-test.sh"
+              sh "bash integration-test.sh"
             } catch (e) {
               sh "kubectl -n default rollout undo deploy ${deploymentName}"
             }
