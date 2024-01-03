@@ -1,11 +1,13 @@
 pipeline {
-  environment 
+  environment {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
     imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
     // applicationURL=""
     applicationURI="/increment/99"
+  }
+  
   agent {
     kubernetes {
       // cloud kubernetes
