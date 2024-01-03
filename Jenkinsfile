@@ -59,6 +59,12 @@ pipeline {
             volumeMounts:
             - name: trivy-data
               mountPath: /root/.cache
+          - name: opa_conftest
+            image: openpolicyagent/conftest
+            command:
+            - sleep
+            args:
+            - 9999999
           restartPolicy: Never
           volumes:
           - name: kaniko-secret
@@ -103,13 +109,13 @@ pipeline {
         }
       }
     }
-    stage('SonarQube Analysis') {
-      steps {
-        container('maven') {
-          sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://18.193.71.85:31186 -Dsonar.login=ce0105ec84117839b0c4bebe58c9cfb6148db1fe"
-        }
-      }
-    }
+    // stage('SonarQube Analysis') {
+    //   steps {
+    //     container('maven') {
+    //       sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://18.193.71.85:31186 -Dsonar.login=ce0105ec84117839b0c4bebe58c9cfb6148db1fe"
+    //     }
+    //   }
+    // }
     stage('Vulnerability Scan - Docker') {
       parallel {
         stage('Dependency Scan') {
@@ -123,6 +129,13 @@ pipeline {
           steps {
             container('trivy') {
               sh "sh trivy-docker-image-scan.sh"
+            }
+          }
+        }
+        stage('OPA Conftest') {
+          steps {
+            container('') {
+              sh 'test --policy dockerfile-security.rego Dockerfile'
             }
           }
         }
