@@ -95,7 +95,7 @@ deny[msg] {
     msg = sprintf("Line %d: Do not use 'sudo' command", [i])
 }
 
-# Make below rule work and enable it
+# TODO: Make below rule work and enable it /CitedCub
 ## Use multi-stage builds
 #default multi_stage = false
 #multi_stage = true {

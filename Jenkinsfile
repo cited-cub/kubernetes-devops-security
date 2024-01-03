@@ -150,6 +150,13 @@ pipeline {
         }
       }
     }
+    stage('Vulnerability Scan - Kubernetes') {
+      steps {
+        container('opa-conftest') {
+          sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
+        }
+      } 
+    }
     stage('Kubernetes deployment - DEV') {
       steps {
         container('kubectl') {
