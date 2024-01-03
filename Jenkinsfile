@@ -68,6 +68,12 @@ pipeline {
             volumeMounts:
             - name: trivy-data
               mountPath: /root/.cache
+          - name: opa-conftest
+            image: openpolicyagent/conftest:latest
+            command:
+            - sleep
+            args:
+            - 9999999
           - name: curl-jq
             image: gempesaw/curl-jq
             command:
@@ -170,7 +176,7 @@ pipeline {
         }
         stage('Kubesec Scan') {
           steps {
-            container('curl-jq') {
+            container('maven') {
               sh "bash kubesec-scan.sh"
             }
           }
