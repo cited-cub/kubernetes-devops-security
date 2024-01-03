@@ -134,7 +134,7 @@ pipeline {
         }
         stage('OPA Conftest') {
           steps {
-            container('') {
+            container('opa-conftest') {
               sh 'test --policy dockerfile-security.rego Dockerfile'
             }
           }
