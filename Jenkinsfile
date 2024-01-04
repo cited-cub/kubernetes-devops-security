@@ -62,6 +62,14 @@ pipeline {
             volumeMounts:
             - name: trivy-data
               mountPath: /root/.cache
+            env:
+            - name: TRIVY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dockerpwd
+                  key: ECR_PASSWORD
+            - name: TRIVY_USERNAME
+              value: AWS
           - name: opa-conftest
             image: openpolicyagent/conftest:latest
             command:
