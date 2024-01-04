@@ -16,3 +16,18 @@ kubectl -n default get deployment ${deploymentName} > /dev/null
 # fi
 
 kubectl -n default apply -f k8s_deployment_service.yaml
+PORT=$(kubectl -n default get svc devsecops-svc -o jsonpath='{.spec.ports[0].nodePort}')
+applicationURL=$(kubectl get no -o jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}')
+echo $PORT
+echo $applicationURL:$PORT$applicationURI
+
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+data:
+  PORT: "${PORT}"
+  applicationURL: "${applicationURL}"
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: devops-tools
+EOF
