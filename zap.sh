@@ -6,7 +6,7 @@ echo $(id -u):$(id -g)
 pwd
 ln -s ${pwd} /zap/wrk
 ls /zap/
-ls /zap/wrk/
+ls /zap/wrk
 zap-api-scan.py -t ${applicationURL}:${PORT}/v3/api-docs -f openapi -r zap_report.html
 
 exit_code=$?
