@@ -12,8 +12,8 @@ zap-api-scan.py -t http://${applicationURL}:${PORT}/v3/api-docs -f openapi -r za
 exit_code=$?
 
 # HTML report
-sudo mkdir -p owasp-zap-report
-sudo mv zap_report.html owasp-zap-report
+mkdir -p owasp-zap-report
+mv zap_report.html owasp-zap-report
 
 echo "Exit code: $exit_code"
 
