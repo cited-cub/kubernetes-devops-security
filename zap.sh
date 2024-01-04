@@ -3,6 +3,7 @@
 # first run this
 # chmod 777 $(pwd)
 echo $(id -u):$(id -g)
+pwd
 ln ${pwd} /zap/wrk/
 ls /zap/
 ls /zap/wrk/
