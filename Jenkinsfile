@@ -3,7 +3,7 @@ pipeline {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
-    // imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
+    imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
     // applicationURL=""
     applicationURI="/increment/99"
   }
@@ -45,16 +45,10 @@ pipeline {
             - name: kaniko-secret
               mountPath: /kaniko/.docker
           - name: kubectl
-            image: 260588174987.dkr.ecr.eu-central-1.amazonaws.com/kubectl-curl
+            image: ${REGISTRY_URI}/kubectl-curl
             securityContext:
               fsGroup: 1000
               runAsUser: 1000
-            env:
-            - name: REGISTRY_URI
-              valueFrom:
-                configMapKeyRef:
-                  name: kaniko-config
-                  key: registryUri
             command:
             - sleep
             args:
