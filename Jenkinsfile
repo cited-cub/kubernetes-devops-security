@@ -45,7 +45,7 @@ pipeline {
             - name: kaniko-secret
               mountPath: /kaniko/.docker
           - name: kubectl
-            image: 236330316854.dkr.ecr.eu-central-1.amazonaws.com/kubectl-curl
+            image: 260588174987.dkr.ecr.eu-central-1.amazonaws.com/kubectl-curl
             securityContext:
               fsGroup: 1000
               runAsUser: 1000
