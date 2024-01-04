@@ -53,7 +53,16 @@ pipeline {
             - sleep
             args:
             - 9999999
-          - name: trivy
+          - name: trivy1
+            image: aquasec/trivy:0.17.2
+            command:
+            - sleep
+            args:
+            - 9999999
+            volumeMounts:
+            - name: trivy-data
+              mountPath: /root/.cache
+          - name: trivy2
             image: aquasec/trivy:0.17.2
             command:
             - sleep
@@ -144,7 +153,7 @@ pipeline {
         }
         stage('Trivy') {
           steps {
-            container('trivy') {
+            container('trivy1') {
               sh "sh trivy-docker-image-scan.sh"
             }
           }
@@ -185,7 +194,7 @@ pipeline {
         }
         stage('Trivy Scan') {
           steps {
-            container('trivy') {
+            container('trivy2') {
               sh "sh trivy-k8s-scan.sh"
             }
           }
