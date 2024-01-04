@@ -91,6 +91,16 @@ pipeline {
             - sleep
             args:
             - 9999999
+          - name: owasp-zap2docker
+            image: owasp/zap2docker-weekly
+            command:
+            - sleep
+            args:
+            - 9999999
+            envFrom:
+            - configMapRef:
+                name: app-config
+
           restartPolicy: Never
           volumes:
           - name: kaniko-secret
@@ -244,6 +254,13 @@ pipeline {
               throw e
             }
           }
+        }
+      }
+    }
+    stage('OWASP ZAP - DAST') {
+      steps {
+        container('owasp-zap2docker') {
+          sh "bash zap.sh"
         }
       }
     }
