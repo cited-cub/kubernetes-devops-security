@@ -2,7 +2,7 @@
 
 # trivy-k8s-scan
 
-imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
+imageName="${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
 echo $imageName
 
 trivy image --exit-code 0 --severity LOW,MEDIUM,HIGH --light $imageName
