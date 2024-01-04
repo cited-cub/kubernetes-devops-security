@@ -234,13 +234,13 @@ pipeline {
             }
           }
         }
-        stage("Rollout Status") {
-          steps {
-            container('kubectl') {
-              sh "bash k8s-deployment-rollout-status.sh"
-            }
-          }
-        }
+        // stage("Rollout Status") {
+        //   steps {
+        //     container('kubectl') {
+        //       sh "bash k8s-deployment-rollout-status.sh"
+        //     }
+        //   }
+        // }
       }
     }
     // stage('Integration Tests - DEV') {
