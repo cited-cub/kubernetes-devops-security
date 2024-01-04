@@ -11,7 +11,7 @@ pipeline {
   agent {
     kubernetes {
       // cloud kubernetes
-      yaml '''
+      yaml "
         apiVersion: v1
         kind: Pod
         metadata:
@@ -88,7 +88,7 @@ pipeline {
           - name: maven-data
             persistentVolumeClaim:
               claimName: maven-pv-claim
-      '''     
+      "
     }
   }
 
