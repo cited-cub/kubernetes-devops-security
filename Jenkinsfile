@@ -97,9 +97,9 @@ pipeline {
             - sleep
             args:
             - 9999999
-            envFrom:
-            - configMapRef:
-                name: app-config
+            volumeMounts:
+            - mountPath: /config
+              name: app-config-vol
 
           restartPolicy: Never
           volumes:
@@ -115,6 +115,9 @@ pipeline {
           - name: maven-data
             persistentVolumeClaim:
               claimName: maven-pv-claim
+          - name: app-config-vol
+            configMap:
+              name: app-config
       """
     }
   }
