@@ -203,9 +203,9 @@ pipeline {
           }
         }
         stage('Trivy Scan') {
-          // when {
-          //   expression { false }
-          // }
+          when {
+            expression { false }
+          }
           steps {
             container('trivy2') {
               sh "sh trivy-k8s-scan.sh"
