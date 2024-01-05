@@ -269,11 +269,11 @@ pipeline {
         }
       }
     }
-    stage('Testing Slack') {
-      steps {
-        sh 'exit 0'
-      }
-    }
+    // stage('Testing Slack') {
+    //   steps {
+    //     sh 'exit 0'
+    //   }
+    // }
   }
   post {
     always {
