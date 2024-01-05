@@ -136,52 +136,52 @@ pipeline {
         }
       }
     }
-    // stage('Unit Tests - JUnit and Jacoco') {
+    stage('Unit Tests - JUnit and Jacoco') {
+      steps {
+        container('maven') {
+          sh "mvn test"
+        }
+      }
+    }
+    stage('Mutation Tests - PIT') {
+      steps {
+        container('maven') {
+          sh "mvn org.pitest:pitest-maven:mutationCoverage"
+        }
+      }
+    }
+    // stage('SonarQube Analysis') {
     //   steps {
     //     container('maven') {
-    //       sh "mvn test"
+    //       sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://18.193.71.85:31186 -Dsonar.login=ce0105ec84117839b0c4bebe58c9cfb6148db1fe"
     //     }
     //   }
     // }
-    // stage('Mutation Tests - PIT') {
-    //   steps {
-    //     container('maven') {
-    //       sh "mvn org.pitest:pitest-maven:mutationCoverage"
-    //     }
-    //   }
-    // }
-    // // stage('SonarQube Analysis') {
-    // //   steps {
-    // //     container('maven') {
-    // //       sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://18.193.71.85:31186 -Dsonar.login=ce0105ec84117839b0c4bebe58c9cfb6148db1fe"
-    // //     }
-    // //   }
-    // // }
-    // stage('Vulnerability Scan - Docker') {
-    //   parallel {
-    //     stage('Dependency Scan') {
-    //       steps {
-    //         container('maven') {
-    //           sh "mvn dependency-check:check"
-    //         }
-    //       }
-    //     }
-    //     stage('Trivy') {
-    //       steps {
-    //         container('trivy1') {
-    //           sh "sh trivy-docker-image-scan.sh"
-    //         }
-    //       }
-    //     }
-    //     stage('OPA Conftest') {
-    //       steps {
-    //         container('opa-conftest') {
-    //           sh 'conftest test --policy dockerfile-security.rego Dockerfile'
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    stage('Vulnerability Scan - Docker') {
+      parallel {
+        stage('Dependency Scan') {
+          steps {
+            container('maven') {
+              sh "mvn dependency-check:check"
+            }
+          }
+        }
+        stage('Trivy') {
+          steps {
+            container('trivy1') {
+              sh "sh trivy-docker-image-scan.sh"
+            }
+          }
+        }
+        stage('OPA Conftest') {
+          steps {
+            container('opa-conftest') {
+              sh 'conftest test --policy dockerfile-security.rego Dockerfile'
+            }
+          }
+        }
+      }
+    }
     stage('Build and push Java image') {
       steps {
         container('kaniko') {
@@ -191,121 +191,121 @@ pipeline {
         }
       }
     }
-    // stage('Vulnerability Scan - Kubernetes') {
-    //   parallel {
-    //     stage('OPA Scan') {
-    //       steps {
-    //         container('opa-conftest') {
-    //           sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
-    //         }
-    //       }
-    //     }
-    //     stage('Kubesec Scan') {
-    //       steps {
-    //         container('curl-jq') {
-    //           sh "sh kubesec-scan.sh"
-    //         }
-    //       }
-    //     }
-    //     stage('Trivy Scan') {
-    //       when {
-    //         expression { false }
-    //       }
-    //       steps {
-    //         container('trivy2') {
-    //           sh "sh trivy-k8s-scan.sh"
-    //         }
-    //       }
-    //     }
-    //   } 
-    // }
-    // // stage('Kubernetes deployment - DEV') {
-    // //   steps {
-    // //     container('kubectl') {
-    // //       sh '''
-    // //         sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
-    // //       '''
-    // //       sh "kubectl version"
-    // //       sh "kubectl apply -f k8s_deployment_service.yaml"
-    // //     }
-    // //   }
-    // // }
+    stage('Vulnerability Scan - Kubernetes') {
+      parallel {
+        stage('OPA Scan') {
+          steps {
+            container('opa-conftest') {
+              sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
+            }
+          }
+        }
+        stage('Kubesec Scan') {
+          steps {
+            container('curl-jq') {
+              sh "sh kubesec-scan.sh"
+            }
+          }
+        }
+        stage('Trivy Scan') {
+          when {
+            expression { false }
+          }
+          steps {
+            container('trivy2') {
+              sh "sh trivy-k8s-scan.sh"
+            }
+          }
+        }
+      } 
+    }
     // stage('Kubernetes deployment - DEV') {
-    //   parallel {
-    //     stage("Deployment") {
-    //       steps {
-    //         container('kubectl') {
-    //           sh "bash k8s-deployment.sh"
-    //         }
-    //       }
-    //     }
-    //     stage("Rollout Status") {
-    //       steps {
-    //         container('kubectl') {
-    //           sh "bash k8s-deployment-rollout-status.sh"
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-    // stage('Integration Tests - DEV') {
     //   steps {
     //     container('kubectl') {
-    //       script {
-    //         try {
-    //           sh "bash integration-test.sh"
-    //         } catch (e) {
-    //           sh "kubectl -n default rollout undo deploy ${deploymentName}"
-    //           throw e
-    //         }
-    //       }
+    //       sh '''
+    //         sed -i "s#replace#${REGISTRY_URI}/numeric-app:${GIT_COMMIT}#g" k8s_deployment_service.yaml
+    //       '''
+    //       sh "kubectl version"
+    //       sh "kubectl apply -f k8s_deployment_service.yaml"
     //     }
     //   }
     // }
-    // stage('OWASP ZAP - DAST') {
+    stage('Kubernetes deployment - DEV') {
+      parallel {
+        stage("Deployment") {
+          steps {
+            container('kubectl') {
+              sh "bash k8s-deployment.sh"
+            }
+          }
+        }
+        stage("Rollout Status") {
+          steps {
+            container('kubectl') {
+              sh "bash k8s-deployment-rollout-status.sh"
+            }
+          }
+        }
+      }
+    }
+    stage('Integration Tests - DEV') {
+      steps {
+        container('kubectl') {
+          script {
+            try {
+              sh "bash integration-test.sh"
+            } catch (e) {
+              sh "kubectl -n default rollout undo deploy ${deploymentName}"
+              throw e
+            }
+          }
+        }
+      }
+    }
+    stage('OWASP ZAP - DAST') {
+      steps {
+        container('owasp-zap2docker') {
+          sh "bash zap.sh"
+        }
+      }
+    }
+    // stage('Testing Slack') {
     //   steps {
-    //     container('owasp-zap2docker') {
-    //       sh "bash zap.sh"
-    //     }
+    //     sh 'exit 0'
     //   }
     // }
-    // // stage('Testing Slack') {
-    // //   steps {
-    // //     sh 'exit 0'
-    // //   }
-    // // }
-    // stage('Promote to PROD?') {
-    //   steps {
-    //     timeout(time: 2, unit: 'DAYS') {
-    //       input 'Do you want to approve the deployment to production environment/namespace?'
-    //     }
-    //   }
-    // }
-    // stage('K8S CIS Benchmark') {
-    //   steps {
-    //     script {
-    //       parallel {
-    //         "Master": {
-    //           sh "bash cis-master.sh"
-    //         }
-    //         "Etcd": {
-    //           sh "bash cis-etcd.sh"
-    //         }
-    //         "Kubelet": {
-    //           sh "bash cis-kubelet.sh"
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    stage('Promote to PROD?') {
+      steps {
+        timeout(time: 2, unit: 'DAYS') {
+          input 'Do you want to approve the deployment to production environment/namespace?'
+        }
+      }
+    }
+    stage('K8S CIS Benchmark') {
+      steps {
+        script {
+          parallel {
+            "Master": {
+              sh "bash cis-master.sh"
+            }
+            "Etcd": {
+              sh "bash cis-etcd.sh"
+            }
+            "Kubelet": {
+              sh "bash cis-kubelet.sh"
+            }
+          }
+        }
+      }
+    }
   }
   post {
     always {
-      // junit 'target/surefire-reports/*.xml'
-      // jacoco execPattern: 'target/jacoco.exec'
-      // pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-      // dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-      // publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
+      junit 'target/surefire-reports/*.xml'
+      jacoco execPattern: 'target/jacoco.exec'
+      pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
       sendNotification currentBuild.result
     }
   }
