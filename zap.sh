@@ -4,7 +4,10 @@
 # chmod 777 $(pwd)
 echo $(id -u):$(id -g)
 ln -s $(pwd) /zap/wrk
-zap-api-scan.py -t http://${applicationURL}:${PORT}/v3/api-docs -f openapi -r zap_report.html
+# zap-api-scan.py -t http://${applicationURL}:${PORT}/v3/api-docs -f openapi -r zap_report.html
+
+# Comment above command and uncomment below command to run with CUSTOM RULES
+zap-api-scan.py -t http://${applicationURL}:${PORT}/v3/api-docs -f openapi -c zap_rules -r zap_report.html
 
 exit_code=$?
 
