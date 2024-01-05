@@ -182,15 +182,15 @@ pipeline {
     //     }
     //   }
     // }
-    // stage('Build and push Java image') {
-    //   steps {
-    //     container('kaniko') {
-    //       sh '''
-    //         /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
-    //       '''
-    //     }
-    //   }
-    // }
+    stage('Build and push Java image') {
+      steps {
+        container('kaniko') {
+          sh '''
+            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
+          '''
+        }
+      }
+    }
     // stage('Vulnerability Scan - Kubernetes') {
     //   parallel {
     //     stage('OPA Scan') {
