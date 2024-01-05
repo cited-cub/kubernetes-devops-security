@@ -3,7 +3,11 @@
 #k8s-deployment.sh
 
 imageName="${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
+echo "REGISTRY_URI: ${REGISTRY_URI}"
+echo "GIT_COMMIT: ${GIT_COMMIT}"
+echo "imageName: ${imageName}"
 sed -i "s#replace#${imageName}#g" k8s_deployment_service.yaml
+cat k8s_deployment_service.yaml
 
 # kubectl -n default get deployment ${deploymentName} > /dev/null
 # if [[ $? -ne 0 ]]; then
