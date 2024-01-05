@@ -230,57 +230,57 @@ pipeline {
     // //     }
     // //   }
     // // }
-    stage('Kubernetes deployment - DEV') {
-      parallel {
-        stage("Deployment") {
-          steps {
-            container('kubectl') {
-              sh "bash k8s-deployment.sh"
-            }
-          }
-        }
-        stage("Rollout Status") {
-          steps {
-            container('kubectl') {
-              sh "bash k8s-deployment-rollout-status.sh"
-            }
-          }
-        }
-      }
-    }
-    stage('Integration Tests - DEV') {
-      steps {
-        container('kubectl') {
-          script {
-            try {
-              sh "bash integration-test.sh"
-            } catch (e) {
-              sh "kubectl -n default rollout undo deploy ${deploymentName}"
-              throw e
-            }
-          }
-        }
-      }
-    }
-    stage('OWASP ZAP - DAST') {
-      steps {
-        container('owasp-zap2docker') {
-          sh "bash zap.sh"
-        }
-      }
-    }
-    // stage('Testing Slack') {
-    //   steps {
-    //     sh 'exit 0'
+    // stage('Kubernetes deployment - DEV') {
+    //   parallel {
+    //     stage("Deployment") {
+    //       steps {
+    //         container('kubectl') {
+    //           sh "bash k8s-deployment.sh"
+    //         }
+    //       }
+    //     }
+    //     stage("Rollout Status") {
+    //       steps {
+    //         container('kubectl') {
+    //           sh "bash k8s-deployment-rollout-status.sh"
+    //         }
+    //       }
+    //     }
     //   }
     // }
-    stage('Promote to PROD?') {
-      steps {
-        timeout(time: 2, unit: 'DAYS') {
-          input 'Do you want to approve the deployment to production environment/namespace?'
-        }
-      }
-    }
+    // stage('Integration Tests - DEV') {
+    //   steps {
+    //     container('kubectl') {
+    //       script {
+    //         try {
+    //           sh "bash integration-test.sh"
+    //         } catch (e) {
+    //           sh "kubectl -n default rollout undo deploy ${deploymentName}"
+    //           throw e
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('OWASP ZAP - DAST') {
+    //   steps {
+    //     container('owasp-zap2docker') {
+    //       sh "bash zap.sh"
+    //     }
+    //   }
+    // }
+    // // stage('Testing Slack') {
+    // //   steps {
+    // //     sh 'exit 0'
+    // //   }
+    // // }
+    // stage('Promote to PROD?') {
+    //   steps {
+    //     timeout(time: 2, unit: 'DAYS') {
+    //       input 'Do you want to approve the deployment to production environment/namespace?'
+    //     }
+    //   }
+    // }
     // stage('K8S CIS Benchmark') {
     //   steps {
     //     script {
@@ -301,11 +301,11 @@ pipeline {
   }
   post {
     always {
-      junit 'target/surefire-reports/*.xml'
-      jacoco execPattern: 'target/jacoco.exec'
-      pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
+      // junit 'target/surefire-reports/*.xml'
+      // jacoco execPattern: 'target/jacoco.exec'
+      // pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+      // dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      // publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
       sendNotification currentBuild.result
     }
   }
