@@ -128,6 +128,7 @@ pipeline {
     stage('Show env') {
       steps {
         sh "env"
+        sh "echo ${GIT_COMMIT}"
       }
     }
     stage('Build a Maven project') {
