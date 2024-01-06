@@ -8,7 +8,6 @@ pipeline {
     imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
     // applicationURL=""
     applicationURI="/increment/99"
-    gitCommit = "${env.GIT_COMMIT}"
   }
 
   agent {
@@ -126,18 +125,6 @@ pipeline {
   }
 
   stages {
-    stage('SetEnvironmentProperties') {
-      steps {
-        script {
-          env.setProperty("GIT_COMMIT", "$gitCommit")
-        }
-      }
-    }
-    stage('Print env') {
-      steps {
-        sh "echo ${env.GIT_COMMIT}"
-      }
-    }
     stage('Build a Maven project') {
       steps {
         container('maven') {
@@ -198,9 +185,8 @@ pipeline {
     stage('Build and push Java image') {
       steps {
         container('kaniko') {
-          sh "env"
           sh '''
-            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:${GIT_COMMIT}
+            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
           '''
         }
       }
