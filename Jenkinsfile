@@ -5,7 +5,8 @@ pipeline {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
-    imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
+    imageName = "${REGISTRY_URI}/numeric-app:${scmVars.GIT_COMMIT}"
+    GIT_COMMIT_ID = "${scmVars.GIT_COMMIT}"
     // applicationURL=""
     applicationURI="/increment/99"
   }
