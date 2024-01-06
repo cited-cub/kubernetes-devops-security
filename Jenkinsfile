@@ -125,6 +125,11 @@ pipeline {
   }
 
   stages {
+    stage('Show env') {
+      steps {
+        sh "env"
+      }
+    }
     stage('Build a Maven project') {
       steps {
         container('maven') {
