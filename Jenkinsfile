@@ -128,7 +128,9 @@ pipeline {
   stages {
     stage('SetEnvironmentProperties') {
       steps {
-        env.setProperty("GIT_COMMIT", "$gitCommit")
+        script {
+          env.setProperty("GIT_COMMIT", "$gitCommit")
+        }
       }
     }
     stage('Print env') {
