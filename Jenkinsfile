@@ -298,6 +298,26 @@ pipeline {
     //     }
     //   }
     // }
+    stage('K8S Deployment - PROD') {
+      parallel {
+        stage('Deployment') {
+          steps {
+            container('kubectl') {
+              sh "sed -i 's#replace#${imageName}#g' k8s_PROD-deployment_service.yaml"
+              sh "kubectl -n prod apply -f k8s_PROD-deployment_service.yaml"
+            }
+          }
+        }
+        stage('Rollout Status') {
+          steps {
+            container('kubectl') {
+              sh "bash k8s-PROD-deployment-rollout-status.sh"
+            }
+          }
+        }
+      }
+    }
+    )
   }
   post {
     always {
