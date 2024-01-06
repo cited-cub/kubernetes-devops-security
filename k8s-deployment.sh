@@ -2,9 +2,9 @@
 
 #k8s-deployment.sh
 
-imageName="${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
+imageName="${REGISTRY_URI}/numeric-app:${BUILD_TAG}"
 echo "REGISTRY_URI: ${REGISTRY_URI}"
-echo "GIT_COMMIT: ${GIT_COMMIT}"
+echo "BUILD_TAG: ${BUILD_TAG}"
 echo "imageName: ${imageName}"
 sed -i "s#replace#${imageName}#g" k8s_deployment_service.yaml
 cat k8s_deployment_service.yaml
