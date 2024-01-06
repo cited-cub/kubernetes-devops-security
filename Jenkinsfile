@@ -310,7 +310,7 @@ pipeline {
             container('kubectl') {
               sh "sed -i 's#replace#${imageName}#g' k8s_PROD-deployment_service.yaml"
               sh "kubectl -n prod apply -f k8s_PROD-deployment_service.yaml"
-              sh "kubectl -n prod apply -f istio-gateway-vs.yaml
+              sh "kubectl -n prod apply -f istio-gateway-vs.yaml"
             }
           }
         }
