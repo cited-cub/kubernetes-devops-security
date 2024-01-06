@@ -5,8 +5,7 @@ pipeline {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
-    imageName = "${REGISTRY_URI}/numeric-app:${scmVars.GIT_COMMIT}"
-    GIT_COMMIT_ID = "${scmVars.GIT_COMMIT}"
+    imageName = "${REGISTRY_URI}/numeric-app:${GIT_COMMIT}"
     // applicationURL=""
     applicationURI="/increment/99"
   }
@@ -126,17 +125,6 @@ pipeline {
   }
 
   stages {
-    stage('Show env') {
-      steps {
-        script {
-          def scmVars = checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/kodekloudhub/kubernetes-devops-security.git']]])
-          env.GIT_COMMIT = scmVars.GIT_COMMIT
-          env.GIT_BRANCH = scmVars.GIT_BRANCH
-        }
-        sh "env"
-        sh "echo ${env.GIT_COMMIT}"
-      }
-    }
     stage('Build a Maven project') {
       steps {
         container('maven') {
