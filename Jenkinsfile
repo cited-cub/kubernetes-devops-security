@@ -185,8 +185,9 @@ pipeline {
     stage('Build and push Java image') {
       steps {
         container('kaniko') {
+          sh "env"
           sh '''
-            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$GIT_COMMIT""
+            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:${GIT_COMMIT}
           '''
         }
       }
