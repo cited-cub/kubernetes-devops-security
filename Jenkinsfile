@@ -280,6 +280,9 @@ pipeline {
     //   }
     // }
     stage('Promote to PROD?') {
+      when {
+        expression { false }
+      }
       steps {
         timeout(time: 2, unit: 'DAYS') {
           input 'Do you want to approve the deployment to production environment/namespace?'
