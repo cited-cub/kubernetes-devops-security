@@ -130,17 +130,17 @@ pipeline {
         sh "env"
       }
     }
-    stage('Build a Maven project') {
-      steps {
-        container('maven') {
-          sh '''
-            echo "maven build"
-          '''
-          sh "mvn clean package -DskipTests=true"
-          archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
-        }
-      }
-    }
+    // stage('Build a Maven project') {
+    //   steps {
+    //     container('maven') {
+    //       sh '''
+    //         echo "maven build"
+    //       '''
+    //       sh "mvn clean package -DskipTests=true"
+    //       archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+    //     }
+    //   }
+    // }
     // stage('Unit Tests - JUnit and Jacoco') {
     //   steps {
     //     container('maven') {
@@ -187,15 +187,15 @@ pipeline {
     //     }
     //   }
     // }
-    stage('Build and push Java image') {
-      steps {
-        container('kaniko') {
-          sh '''
-            /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$BUILD_TAG""
-          '''
-        }
-      }
-    }
+    // stage('Build and push Java image') {
+    //   steps {
+    //     container('kaniko') {
+    //       sh '''
+    //         /kaniko/executor --context `pwd` --destination ${REGISTRY_URI}/numeric-app:""$BUILD_TAG""
+    //       '''
+    //     }
+    //   }
+    // }
     // stage('Vulnerability Scan - Kubernetes') {
     //   parallel {
     //     stage('OPA Scan') {
@@ -235,38 +235,38 @@ pipeline {
     // //     }
     // //   }
     // // }
-    stage('Kubernetes deployment - DEV') {
-      parallel {
-        stage("Deployment") {
-          steps {
-            container('kubectl') {
-              sh "bash k8s-deployment.sh"
-            }
-          }
-        }
-        stage("Rollout Status") {
-          steps {
-            container('kubectl') {
-              sh "bash k8s-deployment-rollout-status.sh"
-            }
-          }
-        }
-      }
-    }
-    stage('Integration Tests - DEV') {
-      steps {
-        container('kubectl') {
-          script {
-            try {
-              sh "bash integration-test.sh"
-            } catch (e) {
-              sh "kubectl -n default rollout undo deploy ${deploymentName}"
-              throw e
-            }
-          }
-        }
-      }
-    }
+    // stage('Kubernetes deployment - DEV') {
+    //   parallel {
+    //     stage("Deployment") {
+    //       steps {
+    //         container('kubectl') {
+    //           sh "bash k8s-deployment.sh"
+    //         }
+    //       }
+    //     }
+    //     stage("Rollout Status") {
+    //       steps {
+    //         container('kubectl') {
+    //           sh "bash k8s-deployment-rollout-status.sh"
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('Integration Tests - DEV') {
+    //   steps {
+    //     container('kubectl') {
+    //       script {
+    //         try {
+    //           sh "bash integration-test.sh"
+    //         } catch (e) {
+    //           sh "kubectl -n default rollout undo deploy ${deploymentName}"
+    //           throw e
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
     // stage('OWASP ZAP - DAST') {
     //   steps {
     //     container('owasp-zap2docker') {
@@ -274,11 +274,11 @@ pipeline {
     //     }
     //   }
     // }
-    // // stage('Testing Slack') {
-    // //   steps {
-    // //     sh 'exit 0'
-    // //   }
-    // // }
+    stage('Testing Slack') {
+      steps {
+        sh 'exit 0'
+      }
+    }
     stage('Promote to PROD?') {
       when {
         expression { false }
@@ -306,49 +306,57 @@ pipeline {
     // //     }
     // //   }
     // // }
-    stage('K8S Deployment - PROD') {
-      parallel {
-        stage('Deployment') {
-          steps {
-            container('kubectl') {
-              sh "sed -i 's#replace#${imageName}#g' k8s_PROD-deployment_service.yaml"
-              sh "kubectl -n prod apply -f k8s_PROD-deployment_service.yaml"
-              sh "kubectl -n prod apply -f istio-gateway-vs.yaml"
-            }
-          }
-        }
-        stage('Rollout Status') {
-          steps {
-            container('kubectl') {
-              sh "bash k8s-PROD-deployment-rollout-status.sh"
-            }
-          }
-        }
-      }
-    }
-    stage('Integration Tests - PROD') {
-      steps {
-        container('kubectl') {
-          script {
-            try {
-              sh "bash integration-test-PROD.sh"
-            } catch (e) {
-              sh "kubectl -n prod rollout undo deploy ${deploymentName}"
-              throw e
-            }
-          }
-        }
-      }
-    }
+    // stage('K8S Deployment - PROD') {
+    //   parallel {
+    //     stage('Deployment') {
+    //       steps {
+    //         container('kubectl') {
+    //           sh "sed -i 's#replace#${imageName}#g' k8s_PROD-deployment_service.yaml"
+    //           sh "kubectl -n prod apply -f k8s_PROD-deployment_service.yaml"
+    //           sh "kubectl -n prod apply -f istio-gateway-vs.yaml"
+    //         }
+    //       }
+    //     }
+    //     stage('Rollout Status') {
+    //       steps {
+    //         container('kubectl') {
+    //           sh "bash k8s-PROD-deployment-rollout-status.sh"
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // stage('Integration Tests - PROD') {
+    //   steps {
+    //     container('kubectl') {
+    //       script {
+    //         try {
+    //           sh "bash integration-test-PROD.sh"
+    //         } catch (e) {
+    //           sh "kubectl -n prod rollout undo deploy ${deploymentName}"
+    //           throw e
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
   post {
-    always {
-      // junit 'target/surefire-reports/*.xml'
-      // jacoco execPattern: 'target/jacoco.exec'
-      // pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-      // dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-      // publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
-      sendNotification currentBuild.result
+    // always {
+    //   // junit 'target/surefire-reports/*.xml'
+    //   // jacoco execPattern: 'target/jacoco.exec'
+    //   // pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+    //   // dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+    //   // publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
+    //   // sendNotification currentBuild.result
+    // }
+
+    success {
+      script {
+        env.failedStage = "none"
+        env.emoji = ":white_check_mark: :tada: :thumbsup_all:"
+        sendNotification currentBuild.result
+      }
     }
   }
 }
