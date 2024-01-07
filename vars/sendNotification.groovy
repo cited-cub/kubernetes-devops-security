@@ -33,7 +33,7 @@ def call(String buildStatus = 'STARTED') {
                     "type": "section",
                     "fields": [
                         [
-                            "type": "mkrdwn",
+                            "type": "mrkdwn",
                             "text": "*Job Name:*\n${env.JOB_NAME}"
                         ],
                         [
