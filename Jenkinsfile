@@ -31,7 +31,8 @@ List<Map> getStageResults( RunWrapper build ) {
 }
 
 // Get information of all failed stages
-@NonCPSList<Map> getFailedStages( RunWrapper build ) {
+@NonCPS
+List<Map> getFailedStages( RunWrapper build ) {
   return getStageResults( build ).findAll{ it.result == 'FAILURE' }
 }
 
