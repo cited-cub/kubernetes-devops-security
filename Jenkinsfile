@@ -21,7 +21,7 @@ List<Map> getStageResults( RunWrapper build ) {
     def errorActions = stage.getPipelineActions( ErrorAction )
     def errors = errorActions?.collect{ it.error }.unique()
     
-    reutrn [
+    return [
         id: stage.id,
         failedStageName: stage.displayName,
         result: "${stage.status.result}",
