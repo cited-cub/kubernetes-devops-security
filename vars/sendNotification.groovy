@@ -25,7 +25,7 @@ def call(String buildStatus = 'STARTED') {
                     "type": "header",
                     "text": [
                         "type": "plain_text",
-                        "text": "K8S Deployment - ${deploymentName} Pipeline"
+                        "text": "K8S Deployment - ${deploymentName} Pipeline",
                         "emoji": true
                     ]
                 ]
