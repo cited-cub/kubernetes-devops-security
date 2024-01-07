@@ -315,11 +315,6 @@ pipeline {
         sh 'exit 0'
       }
     }
-    stage('Testing Slack 2') {
-      steps {
-        sh 'exit 1'
-      }
-    }
     stage('Promote to PROD?') {
       when {
         expression { false }
