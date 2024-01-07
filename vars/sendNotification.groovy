@@ -33,5 +33,5 @@ def call(String buildStatus = 'STARTED') {
         ]
     ]
 
-    slackSend(iconEmoji: emoji, attachments: attachments)
+    slackSend(iconEmoji: emoji, attachments: attachments, channel: "jenkins")
 }
