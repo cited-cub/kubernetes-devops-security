@@ -58,7 +58,71 @@ def call(String buildStatus = 'STARTED') {
                         "text": [
                             "type": "plain_text",
                             "text": "Jenkins Build URL",
+                            "emoji": true
+                        ],
+                        "value": "click_me_123",
+                        "url": "${env.BUILD_URL}",
+                        "action_id": "button-action"
+                    ]
+                ],
+                [
+                    "type": "divider"
+                ],
+                [
+                    "type": "section",
+                    "fields": [
+                        [
+                            "type": "mrkdwn",
+                            "text": "*Kubernetes Deployment Name:*\n${deploymentName}"
+                        ],
+                        [
+                            "type": "mrkdwn",
+                            "text": "*Node Port*\n32564"
                         ]
+                    ],
+                    "accessory": [
+                        "type": "image",
+                        "image_url": "https://raw.githubusercontent.com/sidd-harth/devsecops-k8s-demo/main/slack-emojis/jenkins-slack.png",
+                        "alt_text": "Kubernetes Icon"
+                    ]
+                ],
+                [
+                    "type": "section",
+                    "text": [
+                        "type": "mrkdwn",
+                        "text": "*Kubernetes Node: *\n`controlplane`"
+                    ],
+                    "accessory": [
+                        "type": "button",
+                        "text": [
+                            "type": "plain_text",
+                            "text": "Application URL",
+                            "emoji": true
+                        ]
+                        "value": "click_me_123",
+                        "url": "${applicationURL}:32564",
+                        "action_id": "button-action"
+                    ]
+                ],
+                [
+                    "type": "divider"
+                ],
+                [
+                    "type": "section",
+                    "fields": [
+                        [
+                            "type": "mrkdwn",
+                            "text": "*Git Commit:*\n${GIT_COMMIT}"
+                        ],
+                        [
+                            "type": "mrkdwn",
+                            "text": "*GIT Previous Success Commit:*\n${GIT_PREVIOUS_SUCCESSFUL_COMMIT}"
+                        ]
+                    ],
+                    "accessory": [
+                        "type": "image",
+                        "image_url": "https://raw.githubusercontent.com/sidd-harth/devsecops-k8s-demo/main/slack-emojis/jenkins-slack.png",
+                        "alt_text": "Github Icon"
                     ]
                 ]
             ]
