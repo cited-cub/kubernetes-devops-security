@@ -42,7 +42,7 @@ pipeline {
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
     imageName = "${REGISTRY_URI}/numeric-app:${BUILD_TAG}"
-    // applicationURL=""
+    applicationURL="http://www.google.com"
     applicationURI="/increment/99"
   }
 
