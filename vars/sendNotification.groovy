@@ -28,6 +28,38 @@ def call(String buildStatus = 'STARTED') {
                         "text": "K8S Deployment - ${deploymentName} Pipeline",
                         "emoji": true
                     ]
+                ],
+                [
+                    "type": "section",
+                    "fields": [
+                        [
+                            "type": "mkrdwn",
+                            "text": "*Job Name:*\n${env.JOB_NAME}"
+                        ],
+                        [
+                            "type": "mrkdwn",
+                            "text": "*Build Number:*\n${env.BUILD_NUMBER}"
+                        ]
+                    ],
+                    "accessory": [
+                        "type": "image",
+                        "image_url": "https://raw.githubusercontent.com/sidd-harth/devsecops-k8s-demo/main/slack-emojis/jenkins-slack.png",
+                        "alt_text": "Slack Icon"
+                    ]
+                ],
+                [
+                    "type": "section",
+                    "text": [
+                        "type": "mrkdwn",
+                        "text": "*Failed Stage Name: * `${env.failedStage}`"
+                    ],
+                    "accessory": [
+                        "type": "button",
+                        "text": [
+                            "type": "plain_text",
+                            "text": "Jenkins Build URL",
+                        ]
+                    ]
                 ]
             ]
         ]
