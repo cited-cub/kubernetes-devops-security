@@ -312,6 +312,11 @@ pipeline {
     // }
     stage('Testing Slack') {
       steps {
+        sh 'exit 0'
+      }
+    }
+    stage('Testing Slack 2') {
+      steps {
         sh 'exit 1'
       }
     }
