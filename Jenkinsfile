@@ -8,7 +8,7 @@ import org.jenkinsci.plugins.workflow.actions.ErrorAction
 
 // Get information about all stages, including the failure cases
 //Returns a list of maps: [[id, failedStageName, result, errors]]
-$NonCPS
+@NonCPS
 List<Map> getStageResults( RunWrapper build ) {
 
   // Get all pipeline nodes that represent stages
