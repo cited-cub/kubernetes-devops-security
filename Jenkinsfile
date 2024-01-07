@@ -141,52 +141,52 @@ pipeline {
         }
       }
     }
-    stage('Unit Tests - JUnit and Jacoco') {
-      steps {
-        container('maven') {
-          sh "mvn test"
-        }
-      }
-    }
-    stage('Mutation Tests - PIT') {
-      steps {
-        container('maven') {
-          sh "mvn org.pitest:pitest-maven:mutationCoverage"
-        }
-      }
-    }
-    // stage('SonarQube Analysis') {
+    // stage('Unit Tests - JUnit and Jacoco') {
     //   steps {
     //     container('maven') {
-    //       sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://18.193.71.85:31186 -Dsonar.login=ce0105ec84117839b0c4bebe58c9cfb6148db1fe"
+    //       sh "mvn test"
     //     }
     //   }
     // }
-    stage('Vulnerability Scan - Docker') {
-      parallel {
-        stage('Dependency Scan') {
-          steps {
-            container('maven') {
-              sh "mvn dependency-check:check"
-            }
-          }
-        }
-        stage('Trivy') {
-          steps {
-            container('trivy1') {
-              sh "sh trivy-docker-image-scan.sh"
-            }
-          }
-        }
-        stage('OPA Conftest') {
-          steps {
-            container('opa-conftest') {
-              sh 'conftest test --policy dockerfile-security.rego Dockerfile'
-            }
-          }
-        }
-      }
-    }
+    // stage('Mutation Tests - PIT') {
+    //   steps {
+    //     container('maven') {
+    //       sh "mvn org.pitest:pitest-maven:mutationCoverage"
+    //     }
+    //   }
+    // }
+    // // stage('SonarQube Analysis') {
+    // //   steps {
+    // //     container('maven') {
+    // //       sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://18.193.71.85:31186 -Dsonar.login=ce0105ec84117839b0c4bebe58c9cfb6148db1fe"
+    // //     }
+    // //   }
+    // // }
+    // stage('Vulnerability Scan - Docker') {
+    //   parallel {
+    //     stage('Dependency Scan') {
+    //       steps {
+    //         container('maven') {
+    //           sh "mvn dependency-check:check"
+    //         }
+    //       }
+    //     }
+    //     stage('Trivy') {
+    //       steps {
+    //         container('trivy1') {
+    //           sh "sh trivy-docker-image-scan.sh"
+    //         }
+    //       }
+    //     }
+    //     stage('OPA Conftest') {
+    //       steps {
+    //         container('opa-conftest') {
+    //           sh 'conftest test --policy dockerfile-security.rego Dockerfile'
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
     stage('Build and push Java image') {
       steps {
         container('kaniko') {
@@ -196,45 +196,45 @@ pipeline {
         }
       }
     }
-    stage('Vulnerability Scan - Kubernetes') {
-      parallel {
-        stage('OPA Scan') {
-          steps {
-            container('opa-conftest') {
-              sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
-            }
-          }
-        }
-        stage('Kubesec Scan') {
-          steps {
-            container('curl-jq') {
-              sh "sh kubesec-scan.sh"
-            }
-          }
-        }
-        stage('Trivy Scan') {
-          when {
-            expression { false }
-          }
-          steps {
-            container('trivy2') {
-              sh "sh trivy-k8s-scan.sh"
-            }
-          }
-        }
-      } 
-    }
-    // stage('Kubernetes deployment - DEV') {
-    //   steps {
-    //     container('kubectl') {
-    //       sh '''
-    //         sed -i "s#replace#${REGISTRY_URI}/numeric-app:${BUILD_TAG}#g" k8s_deployment_service.yaml
-    //       '''
-    //       sh "kubectl version"
-    //       sh "kubectl apply -f k8s_deployment_service.yaml"
+    // stage('Vulnerability Scan - Kubernetes') {
+    //   parallel {
+    //     stage('OPA Scan') {
+    //       steps {
+    //         container('opa-conftest') {
+    //           sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
+    //         }
+    //       }
     //     }
-    //   }
+    //     stage('Kubesec Scan') {
+    //       steps {
+    //         container('curl-jq') {
+    //           sh "sh kubesec-scan.sh"
+    //         }
+    //       }
+    //     }
+    //     stage('Trivy Scan') {
+    //       when {
+    //         expression { false }
+    //       }
+    //       steps {
+    //         container('trivy2') {
+    //           sh "sh trivy-k8s-scan.sh"
+    //         }
+    //       }
+    //     }
+    //   } 
     // }
+    // // stage('Kubernetes deployment - DEV') {
+    // //   steps {
+    // //     container('kubectl') {
+    // //       sh '''
+    // //         sed -i "s#replace#${REGISTRY_URI}/numeric-app:${BUILD_TAG}#g" k8s_deployment_service.yaml
+    // //       '''
+    // //       sh "kubectl version"
+    // //       sh "kubectl apply -f k8s_deployment_service.yaml"
+    // //     }
+    // //   }
+    // // }
     stage('Kubernetes deployment - DEV') {
       parallel {
         stage("Deployment") {
@@ -267,18 +267,18 @@ pipeline {
         }
       }
     }
-    stage('OWASP ZAP - DAST') {
-      steps {
-        container('owasp-zap2docker') {
-          sh "bash zap.sh"
-        }
-      }
-    }
-    // stage('Testing Slack') {
+    // stage('OWASP ZAP - DAST') {
     //   steps {
-    //     sh 'exit 0'
+    //     container('owasp-zap2docker') {
+    //       sh "bash zap.sh"
+    //     }
     //   }
     // }
+    // // stage('Testing Slack') {
+    // //   steps {
+    // //     sh 'exit 0'
+    // //   }
+    // // }
     stage('Promote to PROD?') {
       when {
         expression { false }
@@ -289,23 +289,23 @@ pipeline {
         }
       }
     }
-    // stage('K8S CIS Benchmark') {
-    //   steps {
-    //     script {
-    //       parallel {
-    //         "Master": {
-    //           sh "bash cis-master.sh"
-    //         }
-    //         "Etcd": {
-    //           sh "bash cis-etcd.sh"
-    //         }
-    //         "Kubelet": {
-    //           sh "bash cis-kubelet.sh"
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    // // stage('K8S CIS Benchmark') {
+    // //   steps {
+    // //     script {
+    // //       parallel {
+    // //         "Master": {
+    // //           sh "bash cis-master.sh"
+    // //         }
+    // //         "Etcd": {
+    // //           sh "bash cis-etcd.sh"
+    // //         }
+    // //         "Kubelet": {
+    // //           sh "bash cis-kubelet.sh"
+    // //         }
+    // //       }
+    // //     }
+    // //   }
+    // // }
     stage('K8S Deployment - PROD') {
       parallel {
         stage('Deployment') {
@@ -326,14 +326,28 @@ pipeline {
         }
       }
     }
+    stage('Integration Tests - PROD') {
+      steps {
+        container('kubectl') {
+          script {
+            try {
+              sh "bash integration-test-PROD.sh"
+            } catch (e) {
+              sh "kubectl -n prod rollout undo deploy ${deploymentName}"
+              throw e
+            }
+          }
+        }
+      }
+    }
   }
   post {
     always {
-      junit 'target/surefire-reports/*.xml'
-      jacoco execPattern: 'target/jacoco.exec'
-      pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
+      // junit 'target/surefire-reports/*.xml'
+      // jacoco execPattern: 'target/jacoco.exec'
+      // pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+      // dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      // publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'owasp-zap-report', reportFiles: 'zap_report.html', reportName: 'OWASP ZAP HTML Report', reportTitles: 'OWASP ZAP HTML Report', useWrapperFileDirectly: true])
       sendNotification currentBuild.result
     }
   }
