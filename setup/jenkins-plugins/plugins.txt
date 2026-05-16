@@ -7,3 +7,4 @@ slack@2.4.8
 sonar@2.13.1
 pitmutation@1.0-18
 kubernetes-cli@1.10.2
+pipeline-stage-view@2.19
