@@ -12,19 +12,12 @@ pipeline {
             - sleep
             args:
             - infinity
-          - name: docker
-            image: docker:latest
+          - name: kaniko
+            image: gcr.io/kaniko-project/executor:debug
             command:
             - sleep
             args:
             - infinity
-            volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
-          volumes:
-          - name: docker-sock
-            hostPath:
-              path: /var/run/docker.sock
       '''
     }
   }
@@ -55,9 +48,8 @@ pipeline {
 
     stage('Docker Build and Push') {
       steps {
-        container('docker') {
-          sh 'printenv'
-          sh "docker build -t devsecops-app:${env.GIT_COMMIT} ."
+        container('kaniko') {
+          sh "/kaniko/executor --context . --destination devsecops-app:${env.GIT_COMMIT} --no-push"
         }
       }
     }
