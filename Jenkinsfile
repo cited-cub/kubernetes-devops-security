@@ -12,6 +12,19 @@ pipeline {
             - sleep
             args:
             - infinity
+          - name: docker
+            image: docker:latest
+            command:
+            - sleep
+            args:
+            - infinity
+            volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+          volumes:
+          - name: docker-sock
+            hostPath:
+              path: /var/run/docker.sock
       '''
     }
   }
@@ -25,6 +38,7 @@ pipeline {
         }
       }
     }
+
     stage('Unit Tests') {
       steps {
         container('maven') {
@@ -35,6 +49,15 @@ pipeline {
         always {
           junit 'target/surefire-reports/*.xml'
           jacoco execPattern: 'target/jacoco.exec'
+        }
+      }
+    }
+
+    stage('Docker Build and Push') {
+      steps {
+        container('docker') {
+          sh 'printenv'
+          sh "docker build -t devsecops-app:${env.GIT_COMMIT} ."
         }
       }
     }
