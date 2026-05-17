@@ -65,7 +65,7 @@ pipeline {
     stage('Docker Build and Push') {
       steps {
         container('kaniko') {
-          sh "/kaniko/executor --context . --destination ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_COMMIT}"
+          sh "/kaniko/executor --context . --destination ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_COMMIT} --insecure"
         }
       }
     }
