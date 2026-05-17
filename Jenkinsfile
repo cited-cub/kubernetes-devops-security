@@ -21,12 +21,6 @@ pipeline {
             volumeMounts:
             - name: harbor-creds
               mountPath: /kaniko/.docker
-          - name: kubectl
-            image: bitnami/kubectl:latest
-            command:
-            - sleep
-            args:
-            - infinity
           volumes:
           - name: harbor-creds
             secret:
@@ -89,7 +83,7 @@ pipeline {
               git config user.name 'Jenkins CI'
 
               # Percent-encode @ in the token so it doesn't break the git URL
-              GITEA_TOKEN_ENCODED="\${GITEA_TOKEN//@/%40}"
+              GITEA_TOKEN_ENCODED=$(printf '%s' "\${GITEA_TOKEN}" | sed 's/@/%40/g')
 
               # Push updated k8s manifest to the Gitea repo ArgoCD watches
               git add k8s_deployment_service.yaml
@@ -115,13 +109,6 @@ pipeline {
               git push
               cd -
             """
-          }
-          container('kubectl') {
-            withKubeConfig([credentialsId: 'kubeconfig']) {
-              sh """
-                sed "s|GITEA_REPO_URL|http://${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_REPO}.git|g" argocd-application.yaml | kubectl apply -f -
-              """
-            }
           }
         }
       }
