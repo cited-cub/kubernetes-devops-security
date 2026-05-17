@@ -11,7 +11,7 @@ locals {
 resource "kubernetes_secret" "harbor_credentials" {
   metadata {
     name      = "harbor-credentials"
-    namespace = "jenkins"
+    namespace = var.jenkins_namespace
   }
 
   type = "kubernetes.io/dockerconfigjson"

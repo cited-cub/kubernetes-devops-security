@@ -10,6 +10,11 @@ variable "kubeconfig_context" {
   default     = ""
 }
 
+variable "jenkins_namespace" {
+  description = "Kubernetes namespace where Jenkins is running"
+  type        = string
+}
+
 variable "harbor_url" {
   description = "Harbor registry URL (host:port, no protocol)"
   type        = string
