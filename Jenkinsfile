@@ -88,10 +88,13 @@ pipeline {
               git config user.email 'jenkins@devsecops.local'
               git config user.name 'Jenkins CI'
 
+              # Percent-encode @ in the token so it doesn't break the git URL
+              GITEA_TOKEN_ENCODED="\${GITEA_TOKEN//@/%40}"
+
               # Push updated k8s manifest to the Gitea repo ArgoCD watches
               git add k8s_deployment_service.yaml
               git stash
-              git clone http://\${GITEA_USER}:\${GITEA_TOKEN}@${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_REPO}.git /tmp/${env.GITEA_REPO}
+              git clone http://\${GITEA_USER}:\${GITEA_TOKEN_ENCODED}@${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_REPO}.git /tmp/${env.GITEA_REPO}
               cp k8s_deployment_service.yaml /tmp/${env.GITEA_REPO}/
               cd /tmp/${env.GITEA_REPO}
               git config user.email 'jenkins@devsecops.local'
@@ -102,7 +105,7 @@ pipeline {
               cd -
 
               # Push argocd-application.yaml to the argocd-apps repo in Gitea
-              git clone http://\${GITEA_USER}:\${GITEA_TOKEN}@${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_ARGOCD_APPS_REPO}.git /tmp/${env.GITEA_ARGOCD_APPS_REPO}
+              git clone http://\${GITEA_USER}:\${GITEA_TOKEN_ENCODED}@${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_ARGOCD_APPS_REPO}.git /tmp/${env.GITEA_ARGOCD_APPS_REPO}
               sed "s|GITEA_REPO_URL|http://${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_REPO}.git|g" argocd-application.yaml > /tmp/${env.GITEA_ARGOCD_APPS_REPO}/devsecops-app.yaml
               cd /tmp/${env.GITEA_ARGOCD_APPS_REPO}
               git config user.email 'jenkins@devsecops.local'
