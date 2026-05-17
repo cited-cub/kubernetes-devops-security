@@ -83,7 +83,7 @@ pipeline {
               git config user.name 'Jenkins CI'
 
               # Percent-encode @ in the token so it doesn't break the git URL
-              GITEA_TOKEN_ENCODED=$(printf '%s' "\${GITEA_TOKEN}" | sed 's/@/%40/g')
+              GITEA_TOKEN_ENCODED=\$(printf '%s' "\${GITEA_TOKEN}" | sed 's/@/%40/g')
 
               # Push updated k8s manifest to the Gitea repo ArgoCD watches
               git add k8s_deployment_service.yaml
