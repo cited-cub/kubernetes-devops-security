@@ -33,7 +33,7 @@ pipeline {
   }
 
   environment {
-    HARBOR_URL = 'http://18.213.245.123:30500'
+    HARBOR_URL = '18.213.245.123:30500'
     HARBOR_PROJECT = 'devsecops'
     IMAGE_NAME = 'devsecops-app'
   }
