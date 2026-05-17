@@ -86,8 +86,6 @@ pipeline {
               GITEA_TOKEN_ENCODED=\$(printf '%s' "\${GITEA_TOKEN}" | sed 's/@/%40/g')
 
               # Push updated k8s manifest to the Gitea repo ArgoCD watches
-              git add k8s_deployment_service.yaml
-              git stash
               git clone http://\${GITEA_USER}:\${GITEA_TOKEN_ENCODED}@${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_REPO}.git /tmp/${env.GITEA_REPO}
               cp k8s_deployment_service.yaml /tmp/${env.GITEA_REPO}/
               cd /tmp/${env.GITEA_REPO}
