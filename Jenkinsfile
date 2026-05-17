@@ -18,8 +18,24 @@ pipeline {
             - sleep
             args:
             - infinity
+            volumeMounts:
+            - name: harbor-creds
+              mountPath: /kaniko/.docker
+          volumes:
+          - name: harbor-creds
+            secret:
+              secretName: harbor-credentials
+              items:
+              - key: .dockerconfigjson
+                path: config.json
       '''
     }
+  }
+
+  environment {
+    HARBOR_URL = 'http://18.213.245.123:30500'
+    HARBOR_PROJECT = 'devsecops'
+    IMAGE_NAME = 'devsecops-app'
   }
 
   stages {
@@ -49,7 +65,7 @@ pipeline {
     stage('Docker Build and Push') {
       steps {
         container('kaniko') {
-          sh "/kaniko/executor --context . --destination devsecops-app:${env.GIT_COMMIT} --no-push"
+          sh "/kaniko/executor --context . --destination ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_COMMIT}"
         }
       }
     }
