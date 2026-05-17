@@ -21,6 +21,12 @@ pipeline {
             volumeMounts:
             - name: harbor-creds
               mountPath: /kaniko/.docker
+          - name: kubectl
+            image: bitnami/kubectl:latest
+            command:
+            - sleep
+            args:
+            - infinity
           volumes:
           - name: harbor-creds
             secret:
@@ -36,6 +42,8 @@ pipeline {
     HARBOR_URL = 'harbor.harbor.svc.cluster.local'
     HARBOR_PROJECT = 'devsecops'
     IMAGE_NAME = 'devsecops-app'
+    GITEA_URL = 'gitea.gitea.svc.cluster.local:3000'
+    GITEA_REPO = 'kubernetes-devops-security'
   }
 
   stages {
@@ -66,6 +74,30 @@ pipeline {
       steps {
         container('kaniko') {
           sh "/kaniko/executor --context . --destination ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_COMMIT} --insecure"
+        }
+      }
+    }
+
+    stage('K8s Deployment - DEV') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'gitea-credentials', usernameVariable: 'GITEA_USER', passwordVariable: 'GITEA_TOKEN')]) {
+          container('maven') {
+            sh """
+              sed -i "s|image: .*|image: ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_COMMIT}|g" k8s_deployment_service.yaml
+              git config user.email 'jenkins@devsecops.local'
+              git config user.name 'Jenkins CI'
+              git add k8s_deployment_service.yaml argocd-application.yaml
+              git commit -m 'Update devsecops-app image to ${env.GIT_COMMIT} [ci skip]'
+              git push http://\${GITEA_USER}:\${GITEA_TOKEN}@${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_REPO}.git HEAD:main
+            """
+          }
+          container('kubectl') {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh """
+                sed "s|GITEA_REPO_URL|http://${env.GITEA_URL}/\${GITEA_USER}/${env.GITEA_REPO}.git|g" argocd-application.yaml | kubectl apply -f -
+              """
+            }
+          }
         }
       }
     }
