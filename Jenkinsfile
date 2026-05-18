@@ -100,7 +100,7 @@ pipeline {
               git config user.email 'jenkins@devsecops.local'
               git config user.name 'Jenkins CI'
               git add k8s_deployment_service.yaml
-              git commit -m 'Update devsecops-app image to ${env.GIT_COMMIT} [ci skip]'
+              git commit -m 'Update devsecops-app image to ${env.GIT_COMMIT} [ci skip]' || echo 'No changes to commit'
               git push
               cd -
 
