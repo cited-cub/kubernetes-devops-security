@@ -65,6 +65,16 @@ pipeline {
       }
     }
 
+    stage('SonarQube Analysis') {
+      steps {
+        container('maven') {
+          withSonarQubeEnv('SonarQube') {
+            sh "mvn sonar:sonar"
+          }
+        }
+      }
+    }
+
     stage('Docker Build and Push') {
       steps {
         container('kaniko') {
