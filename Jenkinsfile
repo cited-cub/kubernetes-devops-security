@@ -89,8 +89,6 @@ pipeline {
           container('maven') {
             sh """
               sed -i "s|image: .*|image: ${env.HARBOR_URL}/${env.HARBOR_PROJECT}/${env.IMAGE_NAME}:${env.GIT_COMMIT}|g" k8s_deployment_service.yaml
-              git config user.email 'jenkins@devsecops.local'
-              git config user.name 'Jenkins CI'
 
               # Percent-encode @ in the token so it doesn't break the git URL
               GITEA_TOKEN_ENCODED=\$(printf '%s' "\${GITEA_TOKEN}" | sed 's/@/%40/g')
