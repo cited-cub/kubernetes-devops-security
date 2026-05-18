@@ -7,7 +7,7 @@ pipeline {
         spec:
           containers:
           - name: maven
-            image: maven:3.8.6-openjdk-17
+            image: maven:3.9-eclipse-temurin-17
             command:
             - sleep
             args:
